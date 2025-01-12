@@ -6,7 +6,7 @@ public static class EndpointRouteBuilderExtensions
 {
     public static void RegisterAuthorEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var baseEndpoint = endpoints.MapGroup("author").WithTags("Author");
+        var baseEndpoint = endpoints.MapGroup("author").WithTags("Author").RequireAuthorization();
         baseEndpoint.MapGet("", AuthorHandlers.GetAllAuthors);
         baseEndpoint.MapGet("/books", AuthorHandlers.GetAllAuthorsWithBooks);
         baseEndpoint.MapGet("/{id:int}", AuthorHandlers.GetAuthorById).WithName("GetAuthorById");
@@ -17,7 +17,7 @@ public static class EndpointRouteBuilderExtensions
 
     public static void RegisterBookEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var baseEndpoint = endpoints.MapGroup("book").WithTags("Book");
+        var baseEndpoint = endpoints.MapGroup("book").WithTags("Book").RequireAuthorization();
         baseEndpoint.MapGet("", BookHandlers.GetAllBooks);
         baseEndpoint.MapGet("/{id:int}", BookHandlers.GetBookById).WithName("GetBookById");;
         baseEndpoint.MapPost("", BookHandlers.AddBook);

@@ -17,9 +17,45 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 // add automapper
 builder.Services.AddAutoMapper(typeof(BookHubProfile));
 
+// add authentication
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequierdAdminFromBrazil",policy =>
+    {
+        policy.RequireRole("admin");
+        policy.RequireClaim("country", "Brazil");
+    });
+
 // Swagger config
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("TokenAuthBookHub",
+        new()
+        {
+            Name = "Authorization",
+            Description = "Token based Authentication and Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            In = ParameterLocation.Header
+        }
+    );
+    options.AddSecurityRequirement(new()
+        {
+            {
+                new ()
+                {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "TokenAuthBookHub" 
+                    }
+                }, 
+                new List<string>()
+            }
+        }
+    );
+});
 
 // json IgnoreCycles
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
@@ -38,6 +74,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Register endpoints
 app.RegisterAuthorEndpoints();

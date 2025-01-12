@@ -11,7 +11,6 @@ BookHub is a RESTful API developed using .NET 9 Minimal APIs. It manages **autho
   - Retrieve all books written by an author.
 - **Book Management**:
   - Create, retrieve, update, and delete books.
-- Adheres to clean architecture principles.
 - Provides a Swagger UI for testing and exploring the API endpoints.
 
 ---
